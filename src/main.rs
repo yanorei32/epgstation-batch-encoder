@@ -1,3 +1,5 @@
+#![warn(clippy::all, clippy::restriction, clippy::nursery, clippy::cargo, clippy::pedantic)]
+
 use std::fmt::Write;
 use std::path::PathBuf;
 
