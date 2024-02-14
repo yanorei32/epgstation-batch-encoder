@@ -47,7 +47,7 @@ impl Client {
         progress: mpsc::Sender<TransferProgress>,
     ) -> Result<()> {
         let mut url = self.host.clone();
-        url.set_path(&format!("/api/videos/{}", videofile_id));
+        url.set_path(&format!("/api/videos/{videofile_id}"));
 
         let response = reqwest::get(url).await?;
 
@@ -65,7 +65,7 @@ impl Client {
 
         while let Some(chunk) = stream.next().await {
             let chunk = &chunk?;
-            file.write_all(&chunk).await?;
+            file.write_all(chunk).await?;
             received_size += chunk.len() as u64;
             let _ = progress.try_send(TransferProgress {
                 total_bytes: content_length,

@@ -52,7 +52,7 @@ pub async fn encode_video_file(
         .collect();
 
     let output_options = map_options.iter().fold(output_options, |opts, map_s| {
-        opts.option(Parameter::KeyValue("map", map_s))
+        return opts.option(Parameter::KeyValue("map", map_s))
     });
 
     let builder = FfmpegBuilder::new()
@@ -71,7 +71,7 @@ pub async fn encode_video_file(
 
     while let Some(v) = ffmpeg.progress.next().await {
         let _ = progress.try_send(EncodeProgress {
-            current_secs: v.unwrap().out_time.unwrap().as_secs() as u64,
+            current_secs: v.unwrap().out_time.unwrap().as_secs(),
             total_secs,
         });
     }

@@ -82,7 +82,6 @@ impl RecordedQuery {
         }
     }
 
-    #[allow(clippy::wrong_self_convention)]
     #[allow(dead_code)]
     pub fn is_reverse(mut self, is_reverse: bool) -> Self {
         self.is_reverse = Some(is_reverse);

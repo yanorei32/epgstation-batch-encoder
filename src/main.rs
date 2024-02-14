@@ -1,6 +1,6 @@
-#![warn(clippy::all, clippy::restriction, clippy::nursery, clippy::cargo, clippy::pedantic)]
+#![warn(clippy::all, clippy::pedantic)]
 
-use std::fmt::Write;
+use core::fmt::Write;
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -33,7 +33,7 @@ fn generate_encode_progress_bar() -> indicatif::ProgressBar {
             )
             .unwrap()
             .with_key("eta", |state: &ProgressState, w: &mut dyn Write| {
-                write!(w, "{:.1}s", state.eta().as_secs_f64()).unwrap()
+                write!(w, "{:.1}s", state.eta().as_secs_f64()).unwrap();
             })
             .progress_chars("#>-"),
         );
@@ -79,7 +79,7 @@ async fn main() -> Result<()> {
     //     .collect();
 
     for (record_id, file_id, file_name, name) in records {
-        let ts_file_path = PathBuf::from(format!("./{}", file_name));
+        let ts_file_path = PathBuf::from(format!("./{file_name}"));
         let mp4_file_path = PathBuf::from(format!(
             "./{}.mp4",
             ts_file_path
@@ -90,8 +90,10 @@ async fn main() -> Result<()> {
         ));
 
         println!("Downloading {name}...");
+
         let pb = generate_transport_progress_bar();
         let (tx, mut rx) = mpsc::channel::<TransferProgress>(1);
+
         tokio::spawn(async move {
             while let Some(p) = rx.recv().await {
                 pb.set_length(p.total_bytes());
@@ -121,8 +123,9 @@ async fn main() -> Result<()> {
 
         println!("Uploading {name}...");
 
-        let (tx, mut rx) = mpsc::channel::<TransferProgress>(1);
         let pb = generate_transport_progress_bar();
+        let (tx, mut rx) = mpsc::channel::<TransferProgress>(1);
+
         tokio::spawn(async move {
             while let Some(p) = rx.recv().await {
                 pb.set_length(p.total_bytes());
