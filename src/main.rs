@@ -8,11 +8,9 @@ use tokio::sync::mpsc;
 
 mod epg_station_api;
 use epg_station_api::api::Client;
-use epg_station_api::model::{RecordedQuery, VideoFileProperty};
+use epg_station_api::model::{RecordedQuery, VideoFileProperty, TransferProgress};
 
 mod ffmpeg_wrap;
-
-use crate::epg_station_api::api::TransferProgress;
 
 fn generate_transport_progress_bar() -> indicatif::ProgressBar {
     let pb = indicatif::ProgressBar::new(1);

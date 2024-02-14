@@ -67,13 +67,13 @@ pub async fn encode_video_file(
     let mut ffmpeg = builder.run().await.unwrap();
 
     let total_secs = source_props.format.duration.unwrap().parse::<f64>()? as u64;
-    let _ = progress.try_send(FfmpegProgress::new(0, total_secs));
+    let _ = progress.try_send(FfmpegProgress { current_secs: 0, total_secs });
 
     while let Some(v) = ffmpeg.progress.next().await {
-        let _ = progress.try_send(FfmpegProgress::new(
-            v.unwrap().out_time.unwrap().as_secs() as u64,
+        let _ = progress.try_send(FfmpegProgress {
+            current_secs: v.unwrap().out_time.unwrap().as_secs() as u64,
             total_secs,
-        ));
+        });
     }
 
     ffmpeg.process.wait_with_output()?;
