@@ -10,7 +10,8 @@ mod epg_station_api;
 use epg_station_api::api::Client;
 use epg_station_api::model::{RecordedQuery, VideoFileProperty, TransferProgress};
 
-mod ffmpeg_wrap;
+mod encoder;
+use encoder::model::EncodeProgress;
 
 fn generate_transport_progress_bar() -> indicatif::ProgressBar {
     let pb = indicatif::ProgressBar::new(1);
@@ -104,7 +105,8 @@ async fn main() -> Result<()> {
         println!("Encoding {name}...");
 
         let pb = generate_encode_progress_bar();
-        let (tx, mut rx) = mpsc::channel::<ffmpeg_wrap::FfmpegProgress>(1);
+        let (tx, mut rx) = mpsc::channel::<EncodeProgress>(1);
+
         tokio::spawn(async move {
             while let Some(p) = rx.recv().await {
                 pb.set_length(p.total_secs());
@@ -113,7 +115,7 @@ async fn main() -> Result<()> {
             pb.finish_and_clear();
         });
 
-        ffmpeg_wrap::encode_video_file(&ts_file_path, &mp4_file_path, tx).await?;
+        encoder::encode_video_file(&ts_file_path, &mp4_file_path, tx).await?;
 
         println!("Uploading {name}...");
 
