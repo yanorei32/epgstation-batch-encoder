@@ -1,6 +1,6 @@
 #![warn(clippy::all, clippy::pedantic)]
 
-use core::fmt::Write;
+use std::fmt::Write;
 use std::path::PathBuf;
 
 use anyhow::Result;

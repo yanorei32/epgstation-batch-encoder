@@ -66,6 +66,8 @@ pub async fn encode_video_file(
 
     let mut ffmpeg = builder.run().await.unwrap();
 
+    #[allow(clippy::cast_possible_truncation)]
+    #[allow(clippy::cast_sign_loss)]
     let total_secs = source_props.format.duration.unwrap().parse::<f64>()? as u64;
     let _ = progress.try_send(EncodeProgress { current_secs: 0, total_secs });
 
