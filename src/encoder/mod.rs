@@ -52,7 +52,7 @@ pub async fn encode_video_file(
         .collect();
 
     let output_options = map_options.iter().fold(output_options, |opts, map_s| {
-        return opts.option(Parameter::KeyValue("map", map_s))
+        opts.option(Parameter::KeyValue("map", map_s))
     });
 
     let builder = FfmpegBuilder::new()
@@ -69,7 +69,10 @@ pub async fn encode_video_file(
     #[allow(clippy::cast_possible_truncation)]
     #[allow(clippy::cast_sign_loss)]
     let total_secs = source_props.format.duration.unwrap().parse::<f64>()? as u64;
-    let _ = progress.try_send(EncodeProgress { current_secs: 0, total_secs });
+    let _ = progress.try_send(EncodeProgress {
+        current_secs: 0,
+        total_secs,
+    });
 
     while let Some(v) = ffmpeg.progress.next().await {
         let _ = progress.try_send(EncodeProgress {
